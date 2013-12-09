@@ -1,0 +1,6 @@
+MI	d	b	0.048936
+LDL	i	-9	-9
+HDL	i	-9	-9
+SEX	c	b	0.5
+T2D	c	b	0.08
+SMOKE	c	b	0.2
