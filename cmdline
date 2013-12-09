@@ -1,1 +1,1 @@
-./mr_predictor_v2.3.pl --score scoresheet_CSHL_mr.txt --info infosheet_CSHL_mr.txt --pheno phenofile_CSHL_mr.txt --ii-rel iifile_CSHL_mr.txt --id-rel idfile_CSHL_mr.txt --scores --pheno-verbose --skip-plink --nsims 2 --cc_nsamp MI -1 20000 --out mytest
+./mr_predictor.pl --score scoresheet_CSHL_mr.txt --info infosheet_CSHL_mr.txt --pheno phenofile_CSHL_mr.txt --ii-rel iifile_CSHL_mr.txt --id-rel idfile_CSHL_mr.txt --scores --pheno-verbose --skip-plink --nsims 2 --cc_nsamp MI -1 20000 --out mytest
