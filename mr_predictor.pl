@@ -170,7 +170,7 @@ sub print_header {
     my ($filehandle) = @_;
     print $filehandle "\n";
     print $filehandle "#----------------------------------#\n";
-    print $filehandle "# mr_predictor # v0.024 # 12.09.13 #\n";
+    print $filehandle "# mr_predictor # v0.025 # 12.09.13 #\n";
     print $filehandle "#----------------------------------#\n";
     print $filehandle "#      (c) Benjamin F. Voight      #\n";
     print $filehandle "#----------------------------------#\n";
