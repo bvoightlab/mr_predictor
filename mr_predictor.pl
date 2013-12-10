@@ -74,12 +74,14 @@
 
 #revision history
 #
+#v0.024, v0.025: no major changes; just setup of git repository
+
 #v0.023:
 #11.19.13: dropped the use of an R calling function and revert explicitly to Math::Random functions, now a required installed module
 #### download  
 #          Math::Random 0.71 http://search.cpan.org/CPAN/authors/id/G/GR/GROMMEL/Math-Random-0.71.tar.gz
 #
-#### installation
+#### installation (without root access)
 #          perl Makefile.PL INSTALL_BASE=~/bin/Perllibs
 #          make
 #          make test
@@ -93,7 +95,6 @@
 #12.01.13: added covariates with effects to prediction model (e.g. SMOKING, T2D, ) see sim_covars
 #12.02.13: added an option to --cc_nsamp. If ncases -1, then simulate a static number of samples (regardless of number of cases or controls obtained). e.g. pseudo odds of '10-year hazard' informally.
 #12.03.13: added an option to skip association testing in plink (--skip-plink)
-#12.03.13: added an option to calculate effective Kp (--calc-Kp), given the input model.
 
 #v0.022
 #
