@@ -24,23 +24,30 @@ To install, one could:
 A. Install via CPAN (assuming this is active)
 
 > cpan
+
 > make install GROMMEL/Math-Random-0.71.tar.gz
 
 One may need root access to install. Alternatively, specify a local directory for the installation.
 
 B. MANUALLY INSTALL
 
-1. download the package from http://search.cpan.org/CPAN/authors/id/G/GR/GROMMEL/Math-Random-0.71.tar.gz
+1. download http://search.cpan.org/CPAN/authors/id/G/GR/GROMMEL/Math-Random-0.71.tar.gz
 
 2. installation (without root access)
-          perl Makefile.PL INSTALL_BASE=~/bin/Perllibs
-          make
-          make test
-          make install
+
+> perl Makefile.PL INSTALL_BASE=~/bin/Perllibs
+
+> make
+
+> make test
+
+> make install
 
 3. Then setup your .bash_profile to look in the correct directory, e.g.
-          set PERL5LIB=$PERL5LIB:$HOME/bin/Perllibs/lib/perl5/x86_64-linux-thread-multi
-          export PERL5LIB
+
+> set PERL5LIB=$PERL5LIB:$HOME/bin/Perllibs/lib/perl5/x86_64-linux-thread-multi
+
+> export PERL5LIB
 
 ##########
 #### USAGE
