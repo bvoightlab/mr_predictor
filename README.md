@@ -23,8 +23,8 @@ To install, one could:
 
 A. Install via CPAN (assuming this is active)
 
-%> cpan
-%> make install GROMMEL/Math-Random-0.71.tar.gz
+> cpan
+> make install GROMMEL/Math-Random-0.71.tar.gz
 
 One may need root access to install. Alternatively, specify a local directory for the installation.
 
@@ -54,7 +54,14 @@ If everything is working properly, after downloading the git repository and inst
 which will generate a simulated data set based on the included sample files.
 
 #########
-#### HELP, COMMENTS, FEATURE REQUESTS, AND BUG REPORTING
+#### HELP
+
+I've create a website which documents features, command reference, and tutorials on usage:
+
+http://coruscant.itmat.upenn.edu/mr_predictor
+
+#########
+#### COMMENTS, FEATURE REQUESTS, AND BUG REPORTING
 
 Please head to 
 
