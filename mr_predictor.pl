@@ -7,6 +7,10 @@
 #BF Voight
 #created: 01.09.09
 
+#INFO ON PROGRAM 
+sub VERSION() { "v0.027" } ; #Current version of program
+sub MODIFIED() { "05.16.14" } ; #Date of current version
+
 #outline for script
 
 #1. Read in a 'locus' file which contains: 
@@ -57,8 +61,9 @@
 # add check for exclude-mean-adj to make sure traits are present (and give warning if not)
 # note that some characters in phenotype names when shifted from perl to R change -- e.g. "-" character changed to "." e.g. HDL-G to HDL.G
 # could make machinery faster by not iterating over all SNP counts when tabulating ipheno or dpheno distortions from genetics
-
+# bug handling when "-" characters in the scoresheet are long dash characters (excel template issue)
 # check to make sure check all SNPs listed in scoresheet are present in the infofile (otherwise die).
+
 
 #Things to look at/Options to add:
 #2. continuous traits that are not normally distributed: e.g. "age"
@@ -73,7 +78,12 @@
 #12. need more robust testing of the simulated intermediates given genetic simulations (with mean adjustments). Does this all work precisely right?
 
 #revision history
-#
+
+#v0.026 
+#05.16.14: 
+# commented out reference to .forR for var/covar matrix generation (file name convention still maintained)
+# added a static (but variable) default for the version and date of the program             
+
 #v0.024, v0.025: no major changes; just setup of git repository
 
 #v0.023:
@@ -171,7 +181,7 @@ sub print_header {
     my ($filehandle) = @_;
     print $filehandle "\n";
     print $filehandle "#----------------------------------#\n";
-    print $filehandle "# mr_predictor # v0.025 # 12.09.13 #\n";
+    print $filehandle "# mr_predictor # " . VERSION() . " # " . MODIFIED() . " #\n";
     print $filehandle "#----------------------------------#\n";
     print $filehandle "#      (c) Benjamin F. Voight      #\n";
     print $filehandle "#----------------------------------#\n";
@@ -763,44 +773,44 @@ sub mk_varcovfile {
     my $print_endline;
     my @row;
     
-    open RVARCOV, ">$forRfile" or die "Can't open $forRfile!\n";
-    $myprint = "Outputting variance/covariance matrix to [ " . $forRfile . " ]\n";
-    print_string($myprint, $out_fh, $log_fh);
+    #open RVARCOV, ">$forRfile" or die "Can't open $forRfile!\n";
+    #$myprint = "Outputting variance/covariance matrix to [ " . $forRfile . " ]\n";
+    #print_string($myprint, $out_fh, $log_fh);
     
-    print RVARCOV "X";
-    foreach my $i (sort string_numerically keys %$ref_phenolist) {
-	if ($$ref_phenolist{$i}[0] =~ m/i/i) {
-	    print RVARCOV " $i";
-	}
-    }
-    print RVARCOV "\n";
+    #print RVARCOV "X";
+    #foreach my $i (sort string_numerically keys %$ref_phenolist) {
+    #	if ($$ref_phenolist{$i}[0] =~ m/i/i) {
+    #	    print RVARCOV " $i";
+    #	}
+    #}
+    #print RVARCOV "\n";
 
     foreach my $i (sort string_numerically keys %$ref_phenolist) {
 	@row = ();
 	if ($$ref_phenolist{$i}[0] =~ m/i/i) {
-	    print RVARCOV "$i";
+	    #print RVARCOV "$i";
 	    foreach my $j (sort string_numerically keys %$ref_phenolist) {
 		if ($$ref_phenolist{$j}[0] =~ m/i/i) {
 		    if ($i =~ m/^$j$/) { #get the adjusted variance for this phenotype
 			$val = sprintf("%1.4f", $$ref_iiphenodata{$i}{$j}-get_sigma_r($ref_basedata, $i, $out_fh, $log_fh));
-			print RVARCOV " $val";
+			#print RVARCOV " $val";
 			push @row, $val;
 		    } else {
 			#just a test
 			#printf RVARCOV " %1.4f", ($$ref_iiphenodata{$i}{$j});
 			$val = sprintf("%1.4f", $$ref_iiphenodata{$i}{$j} - $$ref_cov_adj_matrix{$i}{$j});
-			print RVARCOV " $val";
+			#print RVARCOV " $val";
 			push @row, $val;
 		    }
 		}
 	    }
-	    print RVARCOV "\n";
+	    #print RVARCOV "\n";
 	    push @$ref_vcovm, [ @row ] ;
 	}
        
     }
     
-    close(RVARCOV);
+    #close(RVARCOV);
 }
 
 sub get_sigma_r {
@@ -1757,8 +1767,8 @@ if ($do_cc_sim == 1) { #perform case/control destination simulation.
 	    #simulate a chunk of data to start with [minimize subroutine calls]
 	    if (scalar(@sim_ipheno_data) == 0) {
 		if ($pheno_sim_warning == 0) {
-		    $myprint = "Simulating intermediate trait data as specified in the Variance/Covariance Matrix file [ $rvarcovfile ]\n";
-		    print_string($myprint, $myout, $mylog);
+		    #$myprint = "Simulating intermediate trait data as specified in the Variance/Covariance Matrix file [ $rvarcovfile ]\n";
+		    #print_string($myprint, $myout, $mylog);
 		    $myprint = "Supressing further intermediate phenotype simulation output...\n";
 		    print_string($myprint, $myout, $mylog);
 		    $pheno_sim_warning = 1;

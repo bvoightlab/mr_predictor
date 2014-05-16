@@ -1,1 +1,1 @@
-./mr_predictor.pl --score scoresheet_CSHL_mr.txt --info infosheet_CSHL_mr.txt --pheno phenofile_CSHL_mr.txt --ii-rel iifile_CSHL_mr.txt --id-rel idfile_CSHL_mr.txt --scores --pheno-verbose --skip-plink --nsims 2 --cc_nsamp MI -1 10000 --out mytest
+./mr_predictor.pl --score scoresheet.txt --info infosheet.txt --pheno phenofile.txt --ii-rel iifile.txt --id-rel idfile.txt --scores --pheno-verbose --skip-plink --nsims 2 --cc_nsamp MI -1 10000 --out testrun
