@@ -639,7 +639,7 @@ sub get_infofile {
 }
 
 sub get_scorefile {
-    my ($scorefile, $ref_scoredata, $out_fh, $log_fh) = @_;
+    my ($scorefile, $ref_scoredata, $ref_infodata, $out_fh, $log_fh) = @_;
     my ($readline, $myprint);
     my @entry;
     my $ntot = 0;
@@ -658,7 +658,13 @@ sub get_scorefile {
 		$myprint = "Last line read: " . $readline . "\n";
 		print_string($myprint, $out_fh, $log_fh);
 		exit();
-	    }
+	    } elsif (!defined($$ref_infodata{$entry[0]}) ) {
+		$myprint = "Warning: Entry found in [ " . $scorefile . " ] but not found in the loaded infosheet!\n";
+		print_string($myprint, $out_fh, $log_fh);
+		$myprint = "Last line read: " . $readline . "\n";
+		print_string($myprint, $out_fh, $log_fh);
+		exit();
+	    }	    
 	    
 	    #keyed by SNP rs number and phenotype; then add_fx, add_fx_se, dom_fx, dom_fx_se
 	    if (!defined($$ref_scoredata{$entry[0]}{$entry[1]})) {
@@ -1553,7 +1559,7 @@ get_infofile($infofile, \%info, $myout, $mylog);
 get_phenofile($phenofile, \%pheno, \$covars_exist, $myout, $mylog);
 get_iiphenofile($iirelfile, \%iipheno, \%pheno, $outfix, $do_specify_var, $myout, $mylog);
 get_idphenofile($idrelfile, \%idpheno, \%pheno, \$asc_pheno, $myout, $mylog);
-get_scorefile($scorefile, \%snps, $myout, $mylog);
+get_scorefile($scorefile, \%snps, \%info, $myout, $mylog);
 
 if ($do_cc_sim == 1) { #perform case/control destination simulation.
     #check that you have specified an the ascertainment phenotype (and that it is of type boolean).
