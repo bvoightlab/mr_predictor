@@ -8,8 +8,8 @@
 #created: 01.09.09
 
 #INFO ON PROGRAM 
-sub VERSION() { "v0.027" } ; #Current version of program
-sub MODIFIED() { "05.16.14" } ; #Date of current version
+sub VERSION() { "v0.028" } ; #Current version of program
+sub MODIFIED() { "08.12.14" } ; #Date of current version
 
 #outline for script
 
@@ -57,100 +57,8 @@ sub MODIFIED() { "05.16.14" } ; #Date of current version
 
 #5. Simulations
 
-#to do list
-# add check for exclude-mean-adj to make sure traits are present (and give warning if not)
-# note that some characters in phenotype names when shifted from perl to R change -- e.g. "-" character changed to "." e.g. HDL-G to HDL.G
-# could make machinery faster by not iterating over all SNP counts when tabulating ipheno or dpheno distortions from genetics
-# bug handling when "-" characters in the scoresheet are long dash characters (excel template issue)
-# check to make sure check all SNPs listed in scoresheet are present in the infofile (otherwise die).
-
-
-#Things to look at/Options to add:
-#2. continuous traits that are not normally distributed: e.g. "age"
-#3. implement a "basic" hazard - time to event model
-#5. multiple ascertainment conditions for multiple endpoints (e.g. condition on collecting T2D _AND_ MI, say)
-#6. ascertainment condition on intermediate traits (e.g. patients with LDL > some value)
-#
-#7. family-based designs
-#8. fix correlation/covariance calculation issue.
-#10. add more verbose output to scorefile input (e.g. how many SNPs are read in per trait, how many SNPs overlap, intersect with endpoint(s), etc.)
-#11. cleanup of some revised old function (get_ipheno_chunk is obsolete, some bits in mk_varcovfile)
-#12. need more robust testing of the simulated intermediates given genetic simulations (with mean adjustments). Does this all work precisely right?
-
 #revision history
-
-#v0.026 
-#05.16.14: 
-# commented out reference to .forR for var/covar matrix generation (file name convention still maintained)
-# added a static (but variable) default for the version and date of the program             
-
-#v0.024, v0.025: no major changes; just setup of git repository
-
-#v0.023:
-#11.19.13: dropped the use of an R calling function and revert explicitly to Math::Random functions, now a required installed module
-#### download  
-#          Math::Random 0.71 http://search.cpan.org/CPAN/authors/id/G/GR/GROMMEL/Math-Random-0.71.tar.gz
-#
-#### installation (without root access)
-#          perl Makefile.PL INSTALL_BASE=~/bin/Perllibs
-#          make
-#          make test
-#          make install
-#
-#### setup for .bash_profile           
-#          set PERL5LIB=$PERL5LIB:$HOME/bin/Perllibs/lib/perl5/x86_64-linux-thread-multi
-#          export PERL5LIB
-#
-#11.20.13: moved evaluations of phenofile type "d/i/c" to case insensitive
-#12.01.13: added covariates with effects to prediction model (e.g. SMOKING, T2D, ) see sim_covars
-#12.02.13: added an option to --cc_nsamp. If ncases -1, then simulate a static number of samples (regardless of number of cases or controls obtained). e.g. pseudo odds of '10-year hazard' informally.
-#12.03.13: added an option to skip association testing in plink (--skip-plink)
-
-#v0.022
-#
-#10.31.13: added a 'phenotype-verbose' argument: outputs each intermediate phenotype perturbation to file 
-#10.31.13: modified R function to report 6 significant digits (previously was 5)
-#          also modified calc_mean_adj to report 6 sig digits (previously was no limit)
-#          also modified the sig digits from the step generating the overall phenotypic distortion
-#10.31.13: moved score calculation to "print scores" condition (speedup)
-#10.31.13: added the expected contribution due to genetics (EXPvG) "boost" to the score stat file
-#10.31.13: Modified do_pheno_distort to save ipheno contribution that stem from SNPs which modulate an ipheno and an endpoint
-#          modified sim_dpheno to address when genetic variant is specified for both an intermediate and an outcome (uses endpoint for disease by default).
-#
-#10.30.13: added an explicit call to srand() to ensure results are reproducible
-#10.30.13: also added explicited seed calling to R; updated mr_predictor_sampler.R to mr_predictor_sampler_v2.R
-#10.30.13: fixed a bug in get_iiphenofile where default variances were not being initialized.
-#10.30.13: renovated output data files to explicitly to function calls. 
-#10.30.13: added argument to explicitly calculate (and print) score files; default is not to print scores
-#10.30.13: fixed a couple of bugs argument parsing (copy errors for hazard function)
-#10.30.13: improved phenotypic reporting, and implemented check for SNP overlap and 'dump' of phenotypic (genetic/otherwise) perturbation
-#10.30.13: moved definition of "ipheno_chunk" (number of random multivar norm samples) drawn when R is called; added parameter to 
-#          govern how many samples are drawn at once (potential speedup, depending).
-
-#v0.021
-#10.03.13: added a --set-ipheno-var flag + error handling in iiphenofile to allow for specification of arbitrary variance in intermediate traits
-#default behavior is DEFAULT_VAR constant fucntion, which is assumed to be 1
-#
-#this means that the ii-rel file is now a variance/correlation matrix (which is a variance/covariance matrix under default conditions). 
-#I still need to fix the calculation when variance != 1 to convert correlations to covariances
-#
-#10.09.13: fixed a bug in the iiphenofile function when there is only one trait file and no entries in the iifile (default variance not specified)
-
-#10.08.13: converted sim_dpheno function to a formal logit model for simulations (see Wu et al, AJHG 2011 89(1):82-93)
-
-#v0.02
-#
-#tested variance/covariance calculations for additive models (assuming no dominance). Need to check for models which include a domdev term (and se)
-#added score calculation and reporting framework
-#06.27.09: fixed a bug with how I was advancing random draws of intermediate -> trait effects
-#01.24.12: fixed a bug when outputting the var/cov matrix R file, if phenotypes are named similarly (e.g. fHDL and HDL).
-#02.18.13: allow for ACGT instead of 1234 as code for alleles
-#02.19.13: fixed a bug which led to an undef for the mean_pheno_adj when there are no snps underlying a trait
-#02.19.13: added a new argument --mean-adj trait1,trait2,trait gives a lists of traits which a mean adjustment will be applied.
-
-#v0.01
-#
-#initial code and framework (see above).
+## See http://coruscant.itmat.upenn.edu/mr_predictor/version-history/
 
 ###for outputting purposes
 $| = 1;
@@ -160,6 +68,7 @@ $| = 1;
 
 use Math::Random;
 
+### testing of Math::random module
 # @mean = (0,0);
 # push @vcovm, [ ( 1, 0.8 ) ];
 # push @vcovm, [ ( 0.8, 1 ) ];
@@ -333,6 +242,80 @@ sub print_simped {
     print $out_fh "\n";
 }
 
+sub print_ldstats { #Reports the pairwise r2 (and D) values within each haplotype set.
+    my ($ref_haplist, $ref_afreqs, $out_fh) = @_;
+    my ($a1, $b1, $snp_a, $snp_b, $a1_frq, $b1_frq, $a1b1_hapt_frq);
+    my $D = $rsq = 0;
+    my @hapalleles = ();
+    my @snplist = ();
+    
+    foreach my $snpstring (keys %$ref_haplist) {
+	@snplist = split '\|', $snpstring;
+
+
+	for (my $i=0; $i<scalar(@snplist); $i++) {
+	    for (my $j=0; $j<$i; $j++) {
+		$snp_a = $snplist[$i];
+		$a1 = $$ref_afreqs{$snp_a}[0];
+		$a1_frq = $$ref_afreqs{$snp_a}[2];
+
+		$snp_b = $snplist[$j];
+		$b1 = $$ref_afreqs{$snp_b}[0];
+		$b1_frq = $$ref_afreqs{$snp_b}[2];
+		
+		#now, calculate the a1b1 haplotype freq
+		$a1b1_hapt_frq = 0;
+		foreach my $this_hapt (keys %{$ref_haplist->{$snpstring}}) {
+		    @hapalleles = split '', $this_hapt;
+		    if ($hapalleles[$i] =~ m/$a1/ && $hapalleles[$j] =~ m/$b1/) {
+			$a1b1_hapt_frq += $$ref_haplist{$snpstring}{$this_hapt};
+		    }
+ 
+		    #print "$this_hapt $i $j $$ref_haplist{$snpstring}{$this_hapt} $a1b1_hapt_frq\n";
+		}
+		
+		$D = sprintf("%1.6f",$a1b1_hapt_frq) - sprintf("%1.6f",($a1_frq*$b1_frq));
+		$rsq = sprintf("%1.6f",$D**2)/sprintf("%1.6f",($a1_frq * (1-$a1_frq) * $b1_frq * (1-$b1_frq)));
+		printf $out_fh "$snp_a $snp_b $a1$b1 %f %f\n", $rsq, $D;
+	    }
+	}
+
+    }
+
+}
+
+sub print_ldfreqs { #prints the allele frequencies for haplotype data to file and stores freqs in hash table
+    my ($ref_haplist, $ref_afreqs, $out_fh) = @_;
+    my @snplist = ();
+    my @hapalleles = ();
+
+    #Reports the allele frequencies for each SNP, for each haplotype
+    foreach my $snpstring (keys %$ref_haplist) {
+	@snplist = split '\|', $snpstring;
+	foreach my $this_hapt (keys %{$ref_haplist->{$snpstring}}) {
+	    @hapalleles = split '', $this_hapt;
+	    for (my $i=0; $i<scalar(@hapalleles); $i++) {
+		if (!defined($$ref_afreqs{$snplist[$i]})) {
+		    @{$$ref_afreqs{$snplist[$i]}} = ($hapalleles[$i], -9, $$ref_haplist{$snpstring}{$this_hapt}); #a1 a2 freq(a1)
+		} else {
+		    if ($hapalleles[$i] !~ m/$$ref_afreqs{$snplist[$i]}[0]/) { #found a new allele
+			$$ref_afreqs{$snplist[$i]}[1] = $hapalleles[$i];
+		    } else { #a1 allele found. add frequency
+			$$ref_afreqs{$snplist[$i]}[2] += $$ref_haplist{$snpstring}{$this_hapt};
+		    }
+		}
+	    }
+	} #end this haplotype
+	
+	#print data for this haplotype to frequency file
+	foreach my $snp (@snplist) {
+	    print $out_fh "$snp $$ref_afreqs{$snp}[0] $$ref_afreqs{$snp}[1] $$ref_afreqs{$snp}[2]\n";
+	}
+
+    }
+
+}
+
 sub check_file_exists {
     my ($file, $out_fh, $log_fh) = @_;
     my $myprint;
@@ -378,7 +361,7 @@ sub get_phenofile {
     while ($readline = <PHENO>) {
         @entry = split '\s+', $readline;
         if (scalar(@entry) != 4) {
-            $myprint = "Warning: Different number of entries found in [ " . $file . " ]. Expected 4, but found " . scalar(@entry) . "\n";
+            $myprint = "ERROR: Different number of entries found in [ " . $file . " ]. Expected 4, but found " . scalar(@entry) . "\n";
             print_string($myprint, $out_fh, $log_fh);
             $myprint = "Last line read: " . $readline . "\n";
             print_string($myprint, $out_fh, $log_fh);
@@ -393,7 +376,7 @@ sub get_phenofile {
 		$ntot_d++;
 
 		if ($entry[2] !~ m/b/) {
-		    $myprint = "Warning: improper entry found for type of phenotype for $entry[0] [ $entry[2] ]. Requires 'b'.\n";
+		    $myprint = "ERROR: improper entry found for type of phenotype for $entry[0] [ $entry[2] ]. Requires 'b'.\n";
 		    print_string($myprint, $out_fh, $log_fh);
 		    exit();
 		}
@@ -403,19 +386,19 @@ sub get_phenofile {
 		$$ref_covars_exist = 1; #you found covariates, make sure these data are reported.
 
 		if ($entry[2] !~ m/b/) {
-		    $myprint = "Warning: improper entry found for type of phenotype for $entry[0] [ $entry[2] ]. Requires 'b' ['q' not implemented].\n";
+		    $myprint = "ERROR: improper entry found for type of phenotype for $entry[0] [ $entry[2] ]. Requires 'b' ['q' not implemented].\n";
 		    print_string($myprint, $out_fh, $log_fh);
 		    exit();
 		}
 
 	    } else {
-		$myprint = "Warning: improper entry found for type of phenotype for $entry[0] [ $entry[1] ]. Requires 'i', 'c', or 'd'.\n";
+		$myprint = "ERROR: improper entry found for type of phenotype for $entry[0] [ $entry[1] ]. Requires 'i', 'c', or 'd'.\n";
 		print_string($myprint, $out_fh, $log_fh);
 		exit();
 	    }
 
 	} else {
-	    $myprint = "Warning: $entry[0] found twice in phenotype file! Exiting.\n";
+	    $myprint = "ERROR: $entry[0] found twice in phenotype file! Exiting.\n";
             print_string($myprint, $out_fh, $log_fh);
             exit();
 	}
@@ -604,10 +587,12 @@ sub get_idphenofile {
 }
 
 sub get_infofile {
-    my ($infofile, $ref_infodata, $out_fh, $log_fh) = @_;
+    my ($infofile, $ref_infodata, $ref_ldinfoflag, $out_fh, $log_fh) = @_;
     my ($readline, $myprint);
     my @entry;
     my $ntot = 0;
+    my $ntot_ld = 0;
+    my $fail = 0;
     
     open INFO, "<$infofile" or die "Can't open $infofile!\n";
     #$myprint = "Reading in SNP base information from [ " . $infofile . " ]\n";
@@ -615,7 +600,7 @@ sub get_infofile {
     while ($readline = <INFO>) {
         @entry = split '\s+', $readline;
         if (scalar(@entry) != 4) {
-            $myprint = "Warning: Different number of entries found in [ " . $infofile . " ]. Expected 4, but found " . scalar(@entry) . "\n";
+            $myprint = "ERROR: Different number of entries found in [ " . $infofile . " ]. Expected 4, but found " . scalar(@entry) . "\n";
             print_string($myprint, $out_fh, $log_fh);
             $myprint = "Last line read: " . $readline . "\n";
             print_string($myprint, $out_fh, $log_fh);
@@ -623,10 +608,32 @@ sub get_infofile {
         }
         #keyed by SNP label, then risk, nrisk, freq
 	if (!defined($$ref_infodata{$entry[0]}[0])) {
-	    @{$$ref_infodata{$entry[0]}} = ($entry[1], $entry[2], $entry[3]);
+	    if ($entry[3] !~ m/^[-0-9\.]+$/) {
+		$myprint = "ERROR: Improper allele frequency specified [ $entry[3] ]. Exiting!\n";
+		print_string($myprint, $out_fh, $log_fh);
+		exit();
+	    }
+
+	    if ($entry[3] == -9 && $$ref_ldinfoflag == 0) {
+		$myprint = "ERROR: Found LD-usage flag [ $entry[3] ] but no LD info file specified. Exiting!\n";
+ 		print_string($myprint, $out_fh, $log_fh);
+		exit();
+	    }
+
+	    if ($entry[3] != -9) {
+		if ($entry[3] > 1 || $entry[3] < 0) {
+		    $myprint = "ERROR: Improper allele frequency specified [ $entry[3] ]. Exiting!\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    exit();
+		}
+	    } else {
+		$ntot_ld++;
+	    }
+	    
+	    @{$$ref_infodata{$entry[0]}} = ($entry[1], $entry[2], $entry[3]); #allele frequency here can be -9 given LD specification
 	    $ntot++;
 	} else {
-	    $myprint = "Warning: $entry[0] found twice in info file! Exiting.\n";
+	    $myprint = "ERROR: $entry[0] found twice in info file! Exiting.\n";
 	    print_string($myprint, $out_fh, $log_fh);
 	    exit();
 	}
@@ -635,11 +642,17 @@ sub get_infofile {
 
     $myprint = $ntot . " SNPs read from [ " . $infofile . " ]\n";
     print_string($myprint, $out_fh, $log_fh);
+
+    if ($$ref_ldinfoflag == 1) {
+	$myprint = "Of these, " . $ntot_ld . " SNPs are expected to have LD relationships.\n";
+	print_string($myprint, $out_fh, $log_fh);
+    }
+
     return($ntot);
 }
 
 sub get_scorefile {
-    my ($scorefile, $ref_scoredata, $ref_infodata, $out_fh, $log_fh) = @_;
+    my ($scorefile, $ref_scoredata, $ref_infodata, $ref_afreqs, $ref_ldinfoflag, $out_fh, $log_fh) = @_;
     my ($readline, $myprint);
     my @entry;
     my $ntot = 0;
@@ -653,25 +666,35 @@ sub get_scorefile {
 	    #skip comments.
 	} else {
 	    if (scalar(@entry) != 6) {
-		$myprint = "Warning: Different number of entries found in [ " . $scorefile . " ]. Expected 6, but found " . scalar(@entry) . "\n";
+		$myprint = "ERROR: Different number of entries found in [ " . $scorefile . " ]. Expected 6, but found " . scalar(@entry) . "\n";
 		print_string($myprint, $out_fh, $log_fh);
 		$myprint = "Last line read: " . $readline . "\n";
 		print_string($myprint, $out_fh, $log_fh);
 		exit();
-	    } elsif (!defined($$ref_infodata{$entry[0]}) ) {
-		$myprint = "Warning: Entry found in [ " . $scorefile . " ] but not found in the loaded infosheet!\n";
-		print_string($myprint, $out_fh, $log_fh);
-		$myprint = "Last line read: " . $readline . "\n";
-		print_string($myprint, $out_fh, $log_fh);
-		exit();
-	    }	    
+	    } elsif ($$ref_ldinfoflag == 0) { #check info data only
+		if (!defined($$ref_infodata{$entry[0]}[0]) ) {
+		    $myprint = "ERROR: Entry found in [ " . $scorefile . " ] but not found in the loaded infosheet!\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    $myprint = "Last line read: " . $readline . "\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    exit();
+		} 
+	    } elsif ($$ref_ldinfoflag == 1) { #check loaded info and ldinfo sheets
+		if (!defined($$ref_infodata{$entry[0]}[0]) && !defined($$ref_afreqs{$entry[0]}[0])) {
+		    $myprint = "ERROR: Entry found in [ " . $scorefile . " ] but not found in the loaded infosheet or ld_infosheet!\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    $myprint = "Last line read: " . $readline . "\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    exit();
+		}
+	    }   
 	    
 	    #keyed by SNP rs number and phenotype; then add_fx, add_fx_se, dom_fx, dom_fx_se
-	    if (!defined($$ref_scoredata{$entry[0]}{$entry[1]})) {
+	    if (!defined($$ref_scoredata{$entry[0]}{$entry[1]}[0])) {
 		@{$$ref_scoredata{$entry[0]}{$entry[1]}} = ($entry[2], $entry[3], $entry[4], $entry[5]);
 		$ntot++;
 	    } else {
-		$myprint = "Warning: $entry[0] found twice for the same phenotype in score file! Exiting.\n";
+		$myprint = "ERROR: $entry[0] found twice for the same phenotype in score file! Exiting.\n";
 		print_string($myprint, $out_fh, $log_fh);
 		exit();
 	    }
@@ -683,6 +706,205 @@ sub get_scorefile {
     print_string($myprint, $out_fh, $log_fh);
     return($ntot);    
 }
+
+sub get_ldinfofile {
+    my ($ldinfofile, $ref_infodata, $ref_all_haplist, $out_fh, $log_fh) = @_;
+    my ($snpline, $readline, $myprint, $this_hapt, $snpstring, $t_freq);
+    my $nhaps = 0;
+    my @snplist = ();
+    my @hapalleles = ();
+    my @hapfreqlist = ();
+    my @nsnps_thishapt = ();
+    my %all_snplist;
+    my %happrobs;
+    my %allelefreqs;
+
+    open LDINFO, "<$ldinfofile" or die "Can't open $ldinfofile!\n";
+    $myprint = "Reading in SNP haplotype probability information from [ " . $ldinfofile . " ]\n";
+    print_string($myprint, $out_fh, $log_fh);
+    while ($snpline = <LDINFO>) { 
+	#data in file is paired (2 lines for each haplotype)
+	#first line is SNP list, second line is haplotype freqs	
+
+	$t_freq = 0;
+	$nhaps++;
+	chomp($snpline);
+	@snplist = split '\s+', $snpline;
+	
+	#make the string of SNPs that follows along with the 
+	for (my $i=0; $i<scalar(@snplist); $i++) {
+	    if ($i==0) {
+		$snpstring = $snplist[$i];
+	    } else {
+		$snpstring .= "|" . $snplist[$i];
+	    }
+	}
+
+	if (scalar(@snplist) == 0) {
+	    $myprint = "ERROR: No entries for SNPs found on this line! Exiting.\n";
+	    print_string($myprint, $out_fh, $log_fh);
+	    exit();
+	}
+	    
+	#check to make sure SNPs are represented in the info data file and not duplicated within the LDinfosheet.
+	foreach my $snp (@snplist) {
+	    if (!defined($$ref_infodata{$snp})) {
+		$myprint = "ERROR: SNP [ $snp ] listed in ldinfo file was not found in infosheet! Exiting.\n";
+		print_string($myprint, $out_fh, $log_fh);
+		exit();
+	    }
+
+	    if (!defined($all_snplist{$snp})) {
+		$all_snplist{$snp} = 1;
+	    } else {
+		$myprint = "ERROR: SNP [ $snp ] was already listed in the ldinfo file: You must place all SNPs in LD onto the same haplotype entry! Exiting.\n";
+                print_string($myprint, $out_fh, $log_fh);
+                exit();
+	    }
+	}
+
+	#Now parse haplotype frequency entries
+	if ( !eof(LDINFO) ) { #check if you have reached the end of file
+	    $readline = <LDINFO>;
+	} else {
+	    $myprint = "ERROR: Expecting haplotype probs but reached end of file. Exiting.\n";
+	    print_string($myprint, $out_fh, $log_fh);
+	    exit();
+	}
+	chomp($readline);
+	@hapfreqs = split '\s+', $readline;
+
+	if (scalar(@hapfreqs) == 0) {
+	    $myprint = "ERROR: No haplotype probabilities for SNPs found! Exiting.\n";
+	    print_string($myprint, $out_fh, $log_fh);
+	    exit();
+	}
+	
+	foreach my $hap (@hapfreqs) {
+	    if ($hap !~ m/([A-Z]+):([0-9\.]+)$/) {
+		$myprint = "ERROR: [ $hap ] is improperly formatted. Exiting.\n";
+                print_string($myprint, $out_fh, $log_fh);
+		$myprint = "LD-infosheet line read: $snpline\n";
+                print_string($myprint, $out_fh, $log_fh);
+                exit();
+	    } else {
+		#check to make sure haplotype entry hasn't already been specified
+		if (!defined($$ref_all_haplist{$snpstring}{$1})) {
+		    $this_hapt = $1;
+		    $$ref_all_haplist{$snpstring}{$this_hapt} = $2;
+		    #print "$this_hapt $$ref_all_haplist{$snpstring}{$this_hapt}\n";
+		    @hapalleles = split '', $this_hapt;
+		} else {
+		    $myprint = "ERROR: haplotype [ $1 ] was already listed in given entry: Each entry must be unique! Exiting.\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    $myprint = "LD-infosheet line read: $snpline\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    exit();
+		}
+	    }
+
+	    # check that haplotype size is correct.
+	    if (scalar(@hapalleles) != scalar(@snplist)) {
+		$myprint = "ERROR: Expecting " . scalar(@snplist) . " alleles in haplotype but found " . scalar(@hapalleles) . ": [ $hap ]. Exiting.\n";
+                print_string($myprint, $out_fh, $log_fh);
+                $myprint = "LD-infosheet line read: $snpline\n";
+                print_string($myprint, $out_fh, $log_fh);
+                exit();
+	    }
+	    
+	    # check that alleles found are listed in infosheet
+	    for (my $i=0; $i<scalar(@snplist); $i++) {
+		if ($$ref_infodata{$snplist[$i]}[0] !~ m/$hapalleles[$i]/ && $$ref_infodata{$snplist[$i]}[1] !~ m/$hapalleles[$i]/) {
+		    $myprint = "ERROR: [ " . $$ref_infodata{$snplist[$i]}[0] . "|" . $$ref_infodata{$snplist[$i]}[1] . " ] alleles not found in haplotype [ $hap ]. Exiting.\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    $myprint = "LD-infosheet line read: $snpline\n";
+		    print_string($myprint, $out_fh, $log_fh);
+		    exit();
+		}
+	    }
+
+	    #build allele frequency info from this haplotype entry
+	    for (my $i=0; $i<scalar(@snplist); $i++) {
+		if (!defined($allelefreqs{$snplist[$i]}{$hapalleles[$i]})) {
+		    $allelefreqs{$snplist[$i]}{$hapalleles[$i]} = $$ref_all_haplist{$snpstring}{$this_hapt};
+		} else {
+		    $allelefreqs{$snplist[$i]}{$hapalleles[$i]} += $$ref_all_haplist{$snpstring}{$this_hapt};
+		}
+	    }
+
+	}
+
+	#foreach my $z (keys %$ref_all_haplist) {
+	#    print "$z\n";
+	#    foreach my $y (keys %{$ref_all_haplist->{$z}}) {
+        #         print "$y\n";
+	#    }
+	#}
+	#exit();
+
+	#print "$snpstring\n";
+
+	#verify the number of haplotype entries is correct (expected number is 2**n)
+	@nsnps_thishapt = split '\|', $snpstring;
+	if (scalar(keys %{$ref_all_haplist->{$snpstring}}) != (2**scalar(@nsnps_thishapt))) {
+	    $myprint = "ERROR: incorrect number of haplotype frequencies found. Expected [ " . (2**scalar(@nsnps_thishapt)) . " ]  but found " . scalar(keys %{$ref_all_haplist->{$snpstring}}) . ". Exiting.\n";
+	    print_string($myprint, $out_fh, $log_fh);
+	    $myprint = "LD-infosheet line read: $snpline\n";
+	    print_string($myprint, $out_fh, $log_fh);
+	    exit();
+	}
+
+	#check that the haplotype probs sum to one.	
+	foreach my $hapt (keys %{$ref_all_haplist->{$snpstring}}) {
+	    $t_freq += $$ref_all_haplist{$snpstring}{$hapt};
+	}
+
+	if ( abs($t_freq-1) > FREQ_SUM_TOL() ) { 
+	    $myprint = "ERROR: haplotype probabilities do not sum to one: [ $t_freq ]. Exiting.\n";
+            print_string($myprint, $out_fh, $log_fh);
+            exit();
+	}
+
+	####Check that the allele frequencies all sum to one for each SNP.
+	#Don't need to do this actually since I check that the haplotype probs sum to one.
+	#foreach $snp (keys %allelefreqs) {
+	#    $t_freq = 0;
+	#    foreach $allele (keys %{$allelefreqs{$snp}}) {
+	#         $t_freq += $allelefreqs{$snp}{$allele};	
+	#    }
+	#    if ( abs($t_freq-1) > FREQ_SUM_TOL() ) { 
+	#	$myprint = "ERROR: allele frequencies for SNP [ $snp ] do not sum to one: [ $t_freq ]. Exiting.\n";
+	#	print_string($myprint, $out_fh, $log_fh);
+	#	exit();
+	#    }	
+	#}
+	
+
+    } #END_READSNPfile
+    close(LDINFO);
+
+    #have all SNPs with LD relationships specified in the infosheet been found here? if not, exit
+    foreach my $snp (keys %$ref_infodata) {
+	if ($$ref_infodata{$snp}[2] == -9) {
+	    if (!defined($all_snplist{$snp})) {
+		$myprint = "ERROR: [ $snp ] was listed in infosheet but not found in ldinfosheet! Exiting.\n";
+		print_string($myprint, $out_fh, $log_fh);
+		exit();
+	    }
+	}
+    }
+
+    #Output summary information
+    $myprint = $nhaps . " haplotype inputs read from [ $ldinfofile ]\n";
+    print_string($myprint, $out_fh, $log_fh);
+    $myprint = scalar(keys %all_snplist) . " SNPs in total comprise these haplotype(s).\n";
+    print_string($myprint, $out_fh, $log_fh);
+   
+    #relavent data structure output is %ref_all_haplist, keyed by: {snpstring}{hapt} = happrob;
+
+    return($nhaps);
+}
+
 
 sub get_ipheno_chunk{ 
     my ($ipheno_chunk, $ref_ipheno_order, $ref_sim_ipheno_data, $out_fh, $log_fh) = @_;
@@ -767,7 +989,7 @@ sub mk_basedata {
     foreach $snp (keys %snplist) {
 	foreach $pheno (keys %$ref_phenolist) {
 	    if (!defined($$ref_basedata{$snp}{$pheno}[0])) {
-		@{$$ref_basedata{$snp}{$pheno}} = (0, 0, $$ref_infodata{$snp}[2]);
+		@{$$ref_basedata{$snp}{$pheno}} = (0, 0, $$ref_infodata{$snp}[2]); #retain "-9" flag for ld lookup in sim_genotypes later
 	    }
 	}
     }
@@ -798,7 +1020,7 @@ sub mk_varcovfile {
 	    foreach my $j (sort string_numerically keys %$ref_phenolist) {
 		if ($$ref_phenolist{$j}[0] =~ m/i/i) {
 		    if ($i =~ m/^$j$/) { #get the adjusted variance for this phenotype
-			$val = sprintf("%1.4f", $$ref_iiphenodata{$i}{$j}-get_sigma_r($ref_basedata, $i, $out_fh, $log_fh));
+			$val = sprintf("%1.4f", $$ref_iiphenodata{$i}{$j}-get_sigma_r($ref_basedata, $i, \%ld_afreqs));
 			#print RVARCOV " $val";
 			push @row, $val;
 		    } else {
@@ -820,7 +1042,7 @@ sub mk_varcovfile {
 }
 
 sub get_sigma_r {
-    my ($ref_basedata, $this_pheno, $out_fh, $log_fh) = @_;
+    my ($ref_basedata, $this_pheno, $ref_afreqs) = @_;
     my ($a, $d, $p, $q) = 0;
     my $sig_r = 0;
 
@@ -836,7 +1058,12 @@ sub get_sigma_r {
     foreach my $snp (keys %$ref_basedata) {	
 	$a = $$ref_basedata{$snp}{$this_pheno}[0];
 	$d = $$ref_basedata{$snp}{$this_pheno}[1];
-	$p = $$ref_basedata{$snp}{$this_pheno}[2];
+
+	if ($$ref_basedata{$snp}{$this_pheno}[2] == -9) { #get frequencies from afreq data
+	    $p = $$ref_afreqs{$snp}[2];
+	} else {
+	    $p = $$ref_basedata{$snp}{$this_pheno}[2];
+	}
 	$q = 1-$p;
 	$sig_r += 2*$p*$q*($a + $d*($q-$p))**2 + (2*$p*$q*$d)**2;
     }
@@ -984,25 +1211,81 @@ sub calc_scorestat {
 }
 
 sub sim_genotypes {
-    my ($ref_infodata, $ref_simgeno) = @_;
+    my ($ref_infodata, $ref_simgeno, $ref_haplist, $ref_ldinfoflag) = @_;
     my ($allele_a, $allele_b);
+    my ($hap_prob_a, $hap_prob_b, $low_prob, $up_prob, $found_hap_a, $found_hap_b, $t_freq);
+    my @snplist = ();
+    my @hapalleles_a = ();
+    my @hapalleles_b = ();
 
     ##keyed by SNP label, then risk, nrisk, freq
 
     foreach my $snp (sort string_numerically keys %$ref_infodata) {
-	if (rand() < $$ref_infodata{$snp}[2]) {
-	    $allele_a = $$ref_infodata{$snp}[0];
-	} else {
-	    $allele_a = $$ref_infodata{$snp}[1];
+	if ($$ref_infodata{$snp}[2] != -9) { #allele frequency, not flag for haplotype prob, skip if -9
+	    if (rand() < $$ref_infodata{$snp}[2]) {
+		$allele_a = $$ref_infodata{$snp}[0];
+	    } else {
+		$allele_a = $$ref_infodata{$snp}[1];
+	    }
+	    
+	    if (rand() < $$ref_infodata{$snp}[2]) {
+		$allele_b = $$ref_infodata{$snp}[0];
+	    } else {
+		$allele_b = $$ref_infodata{$snp}[1];
+	    }
+	    @{$$ref_simgeno{$snp}} = ($allele_a, $allele_b);
 	}
-
-	if (rand() < $$ref_infodata{$snp}[2]) {
-	    $allele_b = $$ref_infodata{$snp}[0];
-	} else {
-	    $allele_b = $$ref_infodata{$snp}[1];
-	}
-	@{$$ref_simgeno{$snp}} = ($allele_a, $allele_b);
     }
+
+    #add haplotypes next if specified
+    if ($$ref_ldinfoflag == 1) {
+	
+	foreach my $snpstring (keys %$ref_haplist) {	    
+	    @snplist = split '\|', $snpstring;
+
+            #get the sum of hap probs
+	    #to exception handle the unlikely case if the allele frequency sum is slightly less than 1 but the rand is greater than the total happrobs
+	    $t_freq = 0;
+	    foreach my $this_hapt (keys %{$ref_haplist->{$snpstring}}) {
+		$t_freq += $$ref_haplist{$snpstring}{$this_hapt};
+	    }
+
+	    $low_prob = $up_prob = $found_hap_a = $found_hap_b = 0;
+	    $hap_a_prob = rand($t_freq);
+	    $hap_b_prob = rand($t_freq);
+
+	    #randomly select haplotypes
+	    foreach my $this_hapt (keys %{$ref_haplist->{$snpstring}}) {		
+		$up_prob += $$ref_haplist{$snpstring}{$this_hapt};
+
+		if ($up_prob != $low_prob) { #only check when the hapt prob for this_hapt is non-zero 
+		    #print "$low_prob $up_prob | $hap_a_prob $hap_b_prob\n";
+		    if ($found_hap_a eq 0) {
+			if ($hap_a_prob >= $low_prob && $hap_a_prob < $up_prob) {
+			    $found_hap_a = $this_hapt;
+			}
+		    } 
+		    if ($found_hap_b eq 0) {
+			if ($hap_b_prob >= $low_prob && $hap_b_prob < $up_prob) {
+			    $found_hap_b = $this_hapt;
+			}
+		    }
+		}
+
+		$low_prob = $up_prob;
+	    }
+
+	    #parse haplotypes and store
+	    @hapalleles_a = split '', $found_hap_a;
+	    @hapalleles_b = split '', $found_hap_b;
+	    for (my $i=0; $i<scalar(@snplist); $i++) {
+		@{$$ref_simgeno{$snplist[$i]}} = ($hapalleles_a[$i], $hapalleles_b[$i]);
+	    }
+	       
+	} #END this haplotype
+
+    } #END ld check
+
 }
 
 sub sim_covars {
@@ -1231,6 +1514,9 @@ $do_specify_var = 0; #assume all intermediate traits have DEFAULT_VAR variance a
 $do_printscores = 0; #default is not to print score-based statistics
 $do_phenoverbose = 0; #default is a simple output of phenotypes
 $do_plink_testing = 1; #default is to perform association testing in plink
+$do_ld_info = 0; #default assumes no ld relationships (all SNPs in linkage equilibrium)
+$do_ld_verbose = 0; #default assumes no verbose output for LD relationships
+
 @excl_meanadj_phenolist = (); #default initialization
 
 $seed = "";
@@ -1241,6 +1527,7 @@ $idrelfile = "";
 $infofile = "";
 $scorefile = "";
 $asc_pheno = "";
+$ldinfofile = "";
 
 $pheno_sim_warning = 0;
 
@@ -1254,7 +1541,7 @@ sub DEFAULT_VAR() { 1 } ; #default variance of 1 for intermediate traits -- note
 sub SEX_EFFECT() { 0 } ; #default effect of SEX set to OR=1, ln(OR)=0 
 sub SEX_PREV() { 0.5 } ; #default prob that individual is female (female = 1, male = 0; in plink coding, female = 2, male = 1);
 sub NUM_INTG_BIN() { 0.01 } ; #default window to perform numerical integration for kp estimation.
-
+sub FREQ_SUM_TOL() { 1E-06 } ; #default tolerance for total allele frequency difference
 
 #set up the log file
 #make sure you have an out file specified. if tried (and failed), die.
@@ -1395,6 +1682,22 @@ if (scalar(@ARGV) == 0) {
                     $cmd_string = $cmd_string . $outfix . "\n";
                 }
             }
+	} elsif ($arg =~ m/--ld-infosheet$/) {
+	    $do_ld_info = 1;
+	    $ldinfofile = shift(@ARGV);
+            if (!defined($ldinfofile)) {
+                $myprint = "ERROR: Missing argument for $ldinfofile\n";
+                print_string($myprint, $myout, $mylog);
+                exit();
+            } else {
+                if ($ldinfofile =~ m/--/) {
+                    $myprint = "ERROR: Invalid argument for " . $arg . " [ " . $ldinfofile . " ] (Could an argument be missing?)\n";
+                    print_string($myprint, $myout, $mylog);
+                    exit();
+                } else {
+                    $cmd_string = $cmd_string . $ldinfofile . "\n";
+                }
+            }
 	} elsif ($arg =~ m/--exclude-mean-adj$/) { #list of traits which NOT to apply mean adjustment (default is to apply mean adjustment to all)
 	    $traits = shift(@ARGV);
 	    if (!defined($traits)) {
@@ -1494,6 +1797,9 @@ if (scalar(@ARGV) == 0) {
 	} elsif ($arg =~ m/--pheno-verbose$/) {
 	    $do_phenoverbose = 1;
 	    $cmd_string = $cmd_string . "\n";
+	} elsif ($arg =~ m/--ld-verbose$/) {
+	    $do_ld_verbose = 1;
+	    $cmd_string = $cmd_string . "\n";
 	} elsif ($arg =~ m/--seed$/) {
 	    $specify_seed = 1;
 	    $seed = shift(@ARGV);
@@ -1527,9 +1833,14 @@ if (scalar(@ARGV) == 0) {
     }
 }
 
-
 $cmd_string = $cmd_string . "\n";
 print_string($cmd_string, $myout, $mylog);
+
+if ($do_ld_info == 0 && $do_ld_verbose == 1) {
+    $do_ld_verbose = 0;
+    $myprint = "Warning: LD verbose input specified, but no LD relationships given. Ignoring. (Did you mean to add the --ld_infosheet option?)\n";
+    print_string($myprint, $myout, $mylog);
+}
 
 #set seed if applicable
 if ($specify_seed == 1) {
@@ -1555,11 +1866,31 @@ check_file_exists($phenofile, $myout, $mylog);
 check_file_exists($iirelfile, $myout, $mylog);
 check_file_exists($idrelfile, $myout, $mylog);
 
-get_infofile($infofile, \%info, $myout, $mylog);
+get_infofile($infofile, \%info, \$do_ld_info, $myout, $mylog);
+
+if ($do_ld_info == 1) {
+    check_file_exists($ldinfofile, $myout, $mylog);
+    get_ldinfofile($ldinfofile, \%info, \%info_haplist, $myout, $mylog);
+
+    if ($do_ld_verbose == 1) {
+	$myprint = "Printing SNP allele frequencies specified by [ $ldinfofile ] to [ @{[$outfix]}.ldfreqs ]\n";
+	print_string($myprint, $myout, $mylog);
+        open $myldfreqs, ">@{[$outfix]}.ldfreqs" or die "Can't open @{[$outfix]}.ldfreqs!\n";
+	print_ldfreqs(\%info_haplist, \%ld_afreqs, $myldfreqs);
+	close($myldfreqs);
+
+	$myprint = "Printing LD statistics as specified by [ $ldinfofile ] to [ @{[$outfix]}.ldstats ]\n";
+	print_string($myprint, $myout, $mylog);
+        open $myldstats, ">@{[$outfix]}.ldstats" or die "Can't open @{[$outfix]}.ldstats!\n";
+    	print_ldstats(\%info_haplist, \%ld_afreqs, $myldstats);
+	close($myldstats);        
+    }
+}
+
 get_phenofile($phenofile, \%pheno, \$covars_exist, $myout, $mylog);
 get_iiphenofile($iirelfile, \%iipheno, \%pheno, $outfix, $do_specify_var, $myout, $mylog);
 get_idphenofile($idrelfile, \%idpheno, \%pheno, \$asc_pheno, $myout, $mylog);
-get_scorefile($scorefile, \%snps, \%info, $myout, $mylog);
+get_scorefile($scorefile, \%snps, \%info, \%ld_afreqs, \$do_ld_info, $myout, $mylog);
 
 if ($do_cc_sim == 1) { #perform case/control destination simulation.
     #check that you have specified an the ascertainment phenotype (and that it is of type boolean).
@@ -1596,7 +1927,7 @@ if ($do_cc_sim == 1) { #perform case/control destination simulation.
 
     foreach $ipheno (sort string_numerically keys %pheno) {
 	if ($pheno{$ipheno}[0] =~ m/i/i) {
-	    $sig_r = sprintf("%1.4f", get_sigma_r(\%base, $ipheno));
+	    $sig_r = sprintf("%1.4f", get_sigma_r(\%base, $ipheno, \%ld_afreqs));
 	    $myprint = "Baseline variance for known loci on intermediate trait $ipheno [baseline]: $sig_r\n";
 	    print_string($myprint, $myout, $mylog);
 	}
@@ -1604,7 +1935,7 @@ if ($do_cc_sim == 1) { #perform case/control destination simulation.
 
     foreach $dpheno (sort string_numerically keys %pheno) {
 	if ($pheno{$dpheno}[0] =~ m/d/i) {
-	    $sig_r = sprintf("%1.4f", get_sigma_r(\%base, $dpheno));
+	    $sig_r = sprintf("%1.4f", get_sigma_r(\%base, $dpheno, \%ld_afreqs));
 	    $myprint = "Baseline variance for known loci on destination trait $dpheno [baseline]: $sig_r\n";
 	    print_string($myprint, $myout, $mylog);
 	}
@@ -1622,8 +1953,8 @@ if ($do_cc_sim == 1) { #perform case/control destination simulation.
 	$myprint = "#### Performing Simulation $N\n";
 	print_string($myprint, $myout, $mylog);
 
-	$mysimped = SIMPED;
-	$mysimpheno = SIMPHENO;
+	#$mysimped = SIMPED;
+	#$mysimpheno = SIMPHENO;
 	open $mysimped, ">@{[$outfix]}_@{[$N]}.ped" or die "Can't open @{[$outfix]}_@{[$N]}.ped!\n";
 	open $mysimpheno, ">@{[$outfix]}_@{[$N]}.pheno" or die "Can't open @{[$outfix]}_@{[$N]}.pheno!\n";
 
@@ -1663,7 +1994,7 @@ if ($do_cc_sim == 1) { #perform case/control destination simulation.
 	mk_basedata(\%snps, \%base, \%info, \%pheno, 1, $myout, $mylog);
 	foreach $ipheno (sort string_numerically keys %pheno) {
 	    if ($pheno{$ipheno}[0] =~ m/i/i) {
-		$sig_r = sprintf("%1.4f", get_sigma_r(\%base, $ipheno));
+		$sig_r = sprintf("%1.4f", get_sigma_r(\%base, $ipheno, \%ld_afreqs));
 		$myprint = "Baseline variance for known loci on intermediate trait for $ipheno Sim $N: $sig_r\n";
 		print_string($myprint, $myout, $mylog);
 	    }
@@ -1671,7 +2002,7 @@ if ($do_cc_sim == 1) { #perform case/control destination simulation.
 
 	foreach $dpheno (sort string_numerically keys %pheno) {
 	    if ($pheno{$dpheno}[0] =~ m/d/i) {
-		$sig_r = sprintf("%1.4f", get_sigma_r(\%base, $dpheno));
+		$sig_r = sprintf("%1.4f", get_sigma_r(\%base, $dpheno, \%ld_afreqs));
 		$myprint = "Baseline variance for known loci on destination trait $dpheno [baseline]: $sig_r\n";
 		print_string($myprint, $myout, $mylog);
 	    }
@@ -1764,7 +2095,7 @@ if ($do_cc_sim == 1) { #perform case/control destination simulation.
 	    undef(%sim_covars);
 
 	    #simulate a genotype vector from the given SNP map for the given individual 
-	    sim_genotypes(\%info, \%genodata);
+	    sim_genotypes(\%info, \%genodata, \%info_haplist, \$do_ld_info);
 
 	    #simulate covariate vector for the given individual
 	    sim_covars(\%pheno, \%sim_covars);
@@ -1933,8 +2264,3 @@ elsif ($do_hazard_sim == 1) {
 #End!
 $myprint = "\nAnalysis finished:\t" . scalar(localtime). "\n";
 print_string($myprint, $myout, $mylog);
-
-#./mr_predictor.pl --score scoresheet_gi_mr.txt --info infosheet_gi_mr.txt --pheno phenofile_gi_mr.txt --ii-rel iifile_mr.txt --id-rel idfile_mr.txt --nsims 2 --cc_nsamp MI 1 4999 --out test/tester
-
-#controls 3055
-#cases 2949

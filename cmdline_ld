@@ -1,0 +1,1 @@
+./mr_predictor.pl --score scoresheet.txt --info infosheet_v2.txt --ld-infosheet ld_infosheet.txt --pheno phenofile.txt --ii-rel iifile.txt --id-rel idfile.txt --scores --pheno-verbose --ld-verbose --skip-plink --nsims 2 --cc_nsamp MI -1 10000 --out testrun_ld
