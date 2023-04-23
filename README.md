@@ -61,21 +61,7 @@ If everything is working properly, after downloading the git repository and inst
 which will generate a simulated data set based on the included sample files.
 
 #########
-#### HELP
-
-I've create a website which documents features, command reference, and tutorials on usage:
-
-http://coruscant.itmat.upenn.edu/mr_predictor
-
-#########
 #### COMMENTS, FEATURE REQUESTS, AND BUG REPORTING
 
-Please head to 
-
-http://coruscant.itmat.upenn.edu/mr_predictor/comments-feedback
-
-where you can send me comments, features requests, and report bugs as they come up.
-
 I will endeavor to keep a running list of changes that come in, but may not immediate get to fixing them instantly!
-
 
